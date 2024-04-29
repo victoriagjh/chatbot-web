@@ -7,7 +7,13 @@ import {
     Text
 } from '@chakra-ui/react';
 
-export const LoadingModal = (isOpen: any, onClose: any) => {
+type LoadingModalProps = {
+    isOpen: boolean;
+    onOpen: () => void;
+    onClose: () => void;
+};
+
+const LoadingModal: React.FC<LoadingModalProps> = ({ isOpen, onOpen, onClose }) => {
     return (
         <Modal isOpen={isOpen} onClose={onClose} isCentered>
             <ModalOverlay />
@@ -31,3 +37,5 @@ export const LoadingModal = (isOpen: any, onClose: any) => {
         </Modal>
     );
 }
+
+export default LoadingModal;

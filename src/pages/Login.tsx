@@ -20,13 +20,13 @@ import { apiPost } from '../utils/requests'
 import { useState } from 'react'
 import { saveAuthData } from '../utils/auth'
 import { useNavigate } from 'react-router-dom';
-import { LoadingModal } from '../components/LoadingModal'
+import LoadingModal from '../components/LoadingModal'
 
 
 export const Login = () => {
   const [id, setId] = useState('');
   const [password, setPassword] = useState('');
-  const { isOpen, onClose } = useDisclosure();
+  const { isOpen = false, onOpen, onClose } = useDisclosure();
 
   const navigate = useNavigate();  // useNavigate 훅을 사용하여 navigate 함수를 가져옵니다.
 
@@ -40,6 +40,7 @@ export const Login = () => {
 
   const handleLogin = async () => {
     try {
+      onOpen();
       const response = await apiPost('/api/auth/login', { username: id, password }, {
         headers: {
           'Content-Type': 'application/x-www-form-urlencoded',
@@ -50,13 +51,16 @@ export const Login = () => {
       const data = response.data;
       saveAuthData(data);
       goToChattingRoom();
+      onClose();
     } catch (error) {
+      onClose();
+      alert('Login failed');
       console.error('Login error:', error);
     }
   };
   return (
     <Box className="App">
-      <LoadingModal isOpen={isOpen} onClose={onClose} />
+      <LoadingModal isOpen={isOpen} onOpen={onOpen} onClose={onClose} />
       <Container maxW="lg" py={{ base: '12', md: '24' }} px={{ base: '0', sm: '8' }}>
         <Stack spacing="8">
           <Stack spacing="6">
