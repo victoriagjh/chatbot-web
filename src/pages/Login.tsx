@@ -15,9 +15,41 @@ import {
 } from '@chakra-ui/react'
 import { Logo } from '../components/Logo'
 import { PasswordField } from '../components/PasswordField'
+import { apiPost } from '../utils/requests'
+import { useState } from 'react'
+import { saveAuthData } from '../utils/auth'
+import { useNavigate } from 'react-router-dom';
 
 
 export const Login = () => {
+  const [id, setId] = useState('');
+  const [password, setPassword] = useState('');
+  const navigate = useNavigate();  // useNavigate 훅을 사용하여 navigate 함수를 가져옵니다.
+
+  const handleIdChange = (e: any) => setId(e.target.value);
+  const handlePasswordChange = (e: any) => setPassword(e.target.value);
+
+  const goToChattingRoom = () => {
+    navigate(`/chat`);  // '/home' 경로로 라우트를 변경합니다.
+  };
+
+
+  const handleLogin = async () => {
+    try {
+      const response = await apiPost('/api/auth/login', { username: id, password }, {
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded',
+        },
+      });
+
+      if (response.status !== 200) throw new Error('Login failed');
+      const data = response.data;
+      saveAuthData(data);
+      goToChattingRoom();
+    } catch (error) {
+      console.error('Login error:', error);
+    }
+  };
   return (<Box className="App">
     <Container maxW="lg" py={{ base: '12', md: '24' }} px={{ base: '0', sm: '8' }}>
       <Stack spacing="8">
@@ -45,13 +77,13 @@ export const Login = () => {
           <Stack spacing="6">
             <Stack spacing="5">
               <FormControl>
-                <FormLabel htmlFor="email">Email</FormLabel>
-                <Input id="email" type="email" />
+                <FormLabel htmlFor="id">ID</FormLabel>
+                <Input id="id" type="id" value={id} onChange={handleIdChange} />
               </FormControl>
-              <PasswordField />
+              <PasswordField value={password} onChange={handlePasswordChange} />
             </Stack>
             <Stack spacing="6">
-              <Button>Sign in</Button>
+              <Button onClick={handleLogin}>Sign in</Button>
               <HStack>
                 <Divider />
                 <Text textStyle="sm" whiteSpace="nowrap" color="fg.muted">
