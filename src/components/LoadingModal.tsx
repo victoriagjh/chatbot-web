@@ -19,9 +19,9 @@ const LoadingModal: React.FC<LoadingModalProps> = ({ isOpen, onOpen, onClose }) 
             <ModalOverlay />
             <ModalContent h="30%" >
                 <ModalBody
-                    display="flex"      // Flexbox를 사용하여 내용을 가운데 정렬
-                    justifyContent="center"  // 수평 방향 중앙 정렬
-                    alignItems="center"  // 수직 방향 중앙 정렬
+                    display="flex"
+                    justifyContent="center"
+                    alignItems="center"
                     height="100%"
                     flexDirection="column">
                     <Spinner

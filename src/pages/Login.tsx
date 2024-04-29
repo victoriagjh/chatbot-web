@@ -66,7 +66,6 @@ export const Login = () => {
           <Stack spacing="6">
             <Stack spacing={{ base: '2', md: '3' }} textAlign="center" flexDirection="column" alignItems="center">
               <Logo />
-
               <Heading size="lg" color="green.300" >Welcome To </Heading>
               <Text size="lg" color="green.300" >Victoree Chatbot Web Application</Text>
             </Stack>
