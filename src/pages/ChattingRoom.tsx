@@ -9,7 +9,7 @@ import {
 } from '@chakra-ui/react';
 import { useEffect, useState } from 'react';
 import { Message } from '../schemas/Message';
-import { apiGet } from '../utils/requests';
+import { apiGet, apiPost } from '../utils/requests';
 import { getAuthData } from '../utils/auth';
 import { AuthData } from '../schemas/Auth';
 import { useNavigate } from 'react-router-dom';
@@ -26,6 +26,35 @@ export const ChattingRoom = () => {
         navigate(`/`);
     };
 
+    const sendQuestion = async (question: string) => {
+        onOpen();
+        try {
+            const auth: AuthData | null = getAuthData();
+            if (!auth) {
+                alert('로그인이 필요합니다.');
+                goToLoginPage();
+            };
+            const response = await apiPost('/api/chats', { content: question }, {
+                headers: {
+                    Authorization: `Bearer ${auth?.token.access_token}`,
+                },
+            });
+            if (response.status !== 200) throw new Error('Send Message Failure');
+            console.log(response.data.content)
+            const answer: Message = {
+                sender_type: response.data.sender_type,
+                content: response.data.content,
+                datetime: response.data.created_at
+            }
+            setMessages([...messages, answer]);
+            onClose();
+
+        } catch (error) {
+            onClose();
+            alert('Send Message failed');
+        }
+    }
+
     const handleSend = () => {
         if (input.trim()) {
             const newMessage: Message = {
@@ -34,6 +63,7 @@ export const ChattingRoom = () => {
                 datetime: new Date()
             }
             setMessages([...messages, newMessage]);
+            sendQuestion(input);
             setInput('');
             // 여기서 시스템 응답을 추가하거나 API를 호출할 수 있습니다.
         }
@@ -42,7 +72,6 @@ export const ChattingRoom = () => {
     useEffect(() => {
         const fetchMessage = async () => {
             onOpen();
-
             try {
                 const auth: AuthData | null = getAuthData();
                 if (!auth) {
@@ -56,7 +85,7 @@ export const ChattingRoom = () => {
                 });
                 if (response.status !== 200) throw new Error('Get Message Failure');
                 setMessages(response.data.messages);
-
+                onClose();
             } catch (error) {
                 onClose();
                 alert('Get Message failed');
@@ -69,7 +98,7 @@ export const ChattingRoom = () => {
 
     return (
         <VStack spacing={7} m={3}>
-            <Box h="4vh" verticalAlign="center"><Text fontSize="xl">Victoree Chatbot Web Application</Text></Box>
+            <Box h="4vh" verticalAlign="center"><Text fontSize="xl">Scipy 2024 Demo Application</Text></Box>
             <Box w="80vw" h="80vh" bg="#9bbbd4" overflowY="scroll" p={5} borderRadius={10}>
                 <VStack gap={4}>
                     {messages.map((message, index) => (
