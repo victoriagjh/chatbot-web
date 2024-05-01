@@ -17,7 +17,7 @@ const LoadingModal: React.FC<LoadingModalProps> = ({ isOpen, onOpen, onClose }) 
     return (
         <Modal isOpen={isOpen} onClose={onClose} isCentered>
             <ModalOverlay />
-            <ModalContent h="30%" >
+            <ModalContent h="30%" bg="gray.200" >
                 <ModalBody
                     display="flex"
                     justifyContent="center"

@@ -21,12 +21,15 @@ import { useState } from 'react'
 import { saveAuthData } from '../utils/auth'
 import { useNavigate } from 'react-router-dom';
 import LoadingModal from '../components/LoadingModal'
+import { SignupModal } from '../components/SignUpModal'
 
 
 export const Login = () => {
   const [id, setId] = useState('');
   const [password, setPassword] = useState('');
   const { isOpen = false, onOpen, onClose } = useDisclosure();
+
+  const signUpModal = useDisclosure();
 
   const navigate = useNavigate();  // useNavigate 훅을 사용하여 navigate 함수를 가져옵니다.
 
@@ -61,18 +64,20 @@ export const Login = () => {
   return (
     <Box className="App">
       <LoadingModal isOpen={isOpen} onOpen={onOpen} onClose={onClose} />
+      <SignupModal isOpen={signUpModal.isOpen} onClose={signUpModal.onClose} />
       <Container maxW="lg" py={{ base: '12', md: '24' }} px={{ base: '0', sm: '8' }}>
-        <Stack spacing="8">
+        <Stack spacing="6">
           <Stack spacing="6">
             <Stack spacing={{ base: '2', md: '3' }} textAlign="center" flexDirection="column" alignItems="center">
               <Logo />
               <Heading size="lg" color="green.300" >Welcome To </Heading>
               <Text size="lg" color="green.300" >Victoree Chatbot Web Application</Text>
+              <Text size="lg" color="green.300" >Enjoy Some Film/Drama recommendations with this Chatbot. </Text>
             </Stack>
             <Stack spacing={{ base: '2', md: '3' }} textAlign="center">
               <Heading size={{ base: 'xs', md: 'sm' }}>Log in to your account</Heading>
               <Text color="fg.muted">
-                Don't have an account? <Link href="#">Sign up</Link>
+                Don't have an account? <Link onClick={signUpModal.onOpen}>Sign up</Link>
               </Text>
             </Stack>
           </Stack>

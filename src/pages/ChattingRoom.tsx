@@ -95,12 +95,11 @@ export const ChattingRoom = () => {
 
         fetchMessage(); // 컴포넌트 마운트 시 API 호출
     }, []);
-    console.log(messages)
 
     return (
         <VStack spacing={7} m={3}>
             <LoadingModal isOpen={isOpen} onOpen={onOpen} onClose={onClose} />
-            <Box h="4vh" verticalAlign="center"><Text fontSize="3xl">Scipy 2024 Demo Application</Text></Box>
+            <Box h="4vh" verticalAlign="center"><Text fontSize="2xl">영화/드라마 추천 챗봇</Text></Box>
             <MessageList messages={messages} />
             <HStack w="80vw" h="5vh">
                 <Input
