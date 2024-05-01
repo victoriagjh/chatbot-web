@@ -15,6 +15,8 @@ import { AuthData } from '../schemas/Auth';
 import { useNavigate } from 'react-router-dom';
 import { UserMessage } from '../components/UserMessage';
 import { GPTMessage } from '../components/GPTMessage';
+import LoadingModal from '../components/LoadingModal';
+import { MessageList } from '../components/MessageList';
 
 export const ChattingRoom = () => {
     const [messages, setMessages] = useState<Message[]>([]);
@@ -40,13 +42,12 @@ export const ChattingRoom = () => {
                 },
             });
             if (response.status !== 200) throw new Error('Send Message Failure');
-            console.log(response.data.content)
             const answer: Message = {
                 sender_type: response.data.sender_type,
                 content: response.data.content,
                 datetime: response.data.created_at
             }
-            setMessages([...messages, answer]);
+            setMessages(prevMessages => [...prevMessages, answer]); // 함수형 업데이트 사용
             onClose();
 
         } catch (error) {
@@ -62,7 +63,7 @@ export const ChattingRoom = () => {
                 content: input,
                 datetime: new Date()
             }
-            setMessages([...messages, newMessage]);
+            setMessages(prevMessages => [...prevMessages, newMessage]); // 함수형 업데이트 사용
             sendQuestion(input);
             setInput('');
             // 여기서 시스템 응답을 추가하거나 API를 호출할 수 있습니다.
@@ -93,19 +94,14 @@ export const ChattingRoom = () => {
         };
 
         fetchMessage(); // 컴포넌트 마운트 시 API 호출
-    }, []); // 빈 배열을 종속성으로 넘겨 컴포넌트가 처음 마운트될 때만 실행
+    }, []);
     console.log(messages)
 
     return (
         <VStack spacing={7} m={3}>
-            <Box h="4vh" verticalAlign="center"><Text fontSize="xl">Scipy 2024 Demo Application</Text></Box>
-            <Box w="80vw" h="80vh" bg="#9bbbd4" overflowY="scroll" p={5} borderRadius={10}>
-                <VStack gap={4}>
-                    {messages.map((message, index) => (
-                        message.sender_type === 'BASIC' ? <UserMessage message={message} index={index} flexDirection='row-reverse' /> : <GPTMessage index={index} message={message} flexDirection='row' />
-                    ))}
-                </VStack>
-            </Box>
+            <LoadingModal isOpen={isOpen} onOpen={onOpen} onClose={onClose} />
+            <Box h="4vh" verticalAlign="center"><Text fontSize="3xl">Scipy 2024 Demo Application</Text></Box>
+            <MessageList messages={messages} />
             <HStack w="80vw" h="5vh">
                 <Input
                     placeholder="메시지를 입력하세요..."
